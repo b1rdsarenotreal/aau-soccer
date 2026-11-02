@@ -1,15 +1,15 @@
 // League (dynasty) lifecycle: creating the league, saving results,
 // simulating, adding teams and conferences, and rolling into new seasons.
 
-import { DEFAULT_LOGOS, AAU_LOGO_SET } from './logo-import.js?v=20261102000224';
-import { START_YEAR, CONFERENCES, COACHES, SIDES, sideOf, conferencesFor, seedTeams, makeTeam, fillSite } from './data.js?v=20261102000224';
-import { generateSchedule, blankGame, DAY_ORDER, DEFAULT_REG_WEEKS, DEFAULT_TOURNEY_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, PER_WEEK, confWeeksFor, confWeeksMax, confRounds, confSeriesCounts, confTarget } from './schedule.js?v=20261102000224';
-import { simulateGame, estimateHitsErrors } from './sim.js?v=20261102000224';
-import { generatePoll, releaseDuePolls } from './polls.js?v=20261102000224';
-import { replayRatings, ensureBase } from './ratings.js?v=20261102000224';
-import { progress, lockField, postWeeks, allEvents, regWeeksOf, fieldSize, DEFAULT_NCAA, OLD_DEFAULT_NCAA, pickConfHosts, postseasonFinish, citySiteNames, wsTeams } from './postseason.js?v=20261102000224';
-import { isFinal, records, INDEPENDENT } from './standings.js?v=20261102000224';
-import { rng, normal, clamp, hashStr } from './util.js?v=20261102000224';
+import { DEFAULT_LOGOS, AAU_LOGO_SET } from './logo-import.js?v=20261102003216';
+import { START_YEAR, CONFERENCES, COACHES, SIDES, sideOf, conferencesFor, seedTeams, makeTeam, fillSite } from './data.js?v=20261102003216';
+import { generateSchedule, blankGame, DAY_ORDER, DEFAULT_REG_WEEKS, DEFAULT_TOURNEY_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, PER_WEEK, confWeeksFor, confWeeksMax, confRounds, confSeriesCounts, confTarget } from './schedule.js?v=20261102003216';
+import { simulateGame, estimateHitsErrors } from './sim.js?v=20261102003216';
+import { generatePoll, releaseDuePolls } from './polls.js?v=20261102003216';
+import { replayRatings, ensureBase } from './ratings.js?v=20261102003216';
+import { progress, lockField, postWeeks, allEvents, regWeeksOf, fieldSize, DEFAULT_NCAA, OLD_DEFAULT_NCAA, pickConfHosts, postseasonFinish, citySiteNames, wsTeams } from './postseason.js?v=20261102003216';
+import { isFinal, records, INDEPENDENT } from './standings.js?v=20261102003216';
+import { rng, normal, clamp, hashStr } from './util.js?v=20261102003216';
 
 export const SCHEMA_VERSION = 4;
 
@@ -521,7 +521,7 @@ export function draftWarnings(league) {
       const names = Array.from({ length: n }, (_, i) => `t${i}`);
       const k = confSeriesCounts(confRounds(names, maxRounds, rng(n), st.confMatches ?? DEFAULT_CONF_MATCHES), names).t0;
       if (k < T) out.push(`${c} has ${n} teams. Conference play fits ${weeks} weeks (${maxRounds} rounds), so each team plays ${k} conference matches instead of ${T}. Every member plays the same number.`);
-      else if (T < 2 * (n - 1)) out.push(`${c} has ${n} teams, so each team plays ${T} conference matches: everyone once and some twice (which ones changes every season).`);
+      else if (T > n - 1 && T < 2 * (n - 1)) out.push(`${c} has ${n} teams, so each team plays ${T} conference matches: everyone once and some twice (which ones changes every season).`);
     }
   }
   { const need = fieldNeed(currentSeason(league).settings), have = Object.keys(league.draft.teams).length;

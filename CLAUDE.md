@@ -29,7 +29,8 @@ repos, and theirs aren't ported here, unless the owner asks.
 - Ratings are stored as `off`, `pit`, `def` and shown as ATT (attack), MID
   (midfield and possession), DEF (defense and goalkeeping). OVR = 0.4/0.3/0.3.
 - Schedule: two matches a week, Thursday and Sunday; conference play is a
-  single round robin (`confTarget = min(n - 1, confMatches)`); non-conference
+  single round robin, or a double round robin (home and away) for a
+  conference of 6 or fewer (`confTarget`, `DOUBLE_ROUND_ROBIN_MAX`); non-conference
   matches pair nearby teams of similar level; no invitationals.
 - Postseason stages keep the MCS internal names: `regionals` = regions,
   `supers` = super regionals, `mcws` = the College Cup. With

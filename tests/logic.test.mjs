@@ -107,11 +107,17 @@ check('schedule: two matches a week, Thursday and Sunday; a single round robin i
     for (const t of Object.values(s.teams)) sizes[t.conference] = (sizes[t.conference] || 0) + 1;
     for (const t of Object.values(s.teams)) {
       if (t.conference === INDEPENDENT) continue;
-      assert.equal(conf[t.school], Math.min(sizes[t.conference] - 1, 11), `${t.school} plays everyone in its conference once`);
+      assert.equal(conf[t.school], confTarget(sizes[t.conference]), `${t.school}: everyone once (twice in a conference of 6 or fewer)`);
       assert.ok(Math.abs(2 * (home[t.school] || 0) - conf[t.school]) <= 1, `${t.school} home/away`);
     }
-    const pairs = new Set();
-    for (const x of g.filter(x => x.confGame)) { const k = [x.home, x.away].sort().join('|'); assert.ok(!pairs.has(k), `no repeat conference meeting ${k}`); pairs.add(k); }
+    // Big conferences meet once; small ones twice, once at each school.
+    const meets = {};
+    for (const x of g.filter(x => x.confGame)) (meets[[x.home, x.away].sort().join('|')] ||= []).push(x.home);
+    for (const [k, homes] of Object.entries(meets)) {
+      const size = sizes[s.teams[k.split('|')[0]].conference];
+      if (size <= 6) assert.ok(homes.length === 2 && homes[0] !== homes[1], `${k}: home and away`);
+      else assert.equal(homes.length, 1, `${k}: once`);
+    }
     // Non-conference matches never pair conference rivals, and a team with a
     // conference match in a week plays no non-conference match that week.
     assert.ok(g.every(x => x.confGame || s.teams[x.home].conference !== s.teams[x.away].conference));
