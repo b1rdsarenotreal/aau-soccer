@@ -15,7 +15,7 @@
 // is the number of periods played and `pk` the shootout ({ home, away }).
 // A simulation is only a suggestion — the commissioner reviews and saves it.
 
-import { rng as makeRng } from './util.js?v=20261101234142';
+import { rng as makeRng } from './util.js?v=20261102000224';
 
 export const OVR_WEIGHTS = { off: 0.4, pit: 0.3, def: 0.3 };
 const ovrExact = t => t.off * OVR_WEIGHTS.off + t.pit * OVR_WEIGHTS.pit + t.def * OVR_WEIGHTS.def;
@@ -48,8 +48,8 @@ function playPeriod(minutes, rate, shotRate, r, stats, golden) {
       stats[side].E++;
       // Chance an on-target shot goes in, so goals average `rate`.
       if (r() < Math.min(0.9, rate[side] / (shotRate[side] * ON_TARGET))) goals[side]++;
+      if (golden && goals.home !== goals.away) return goals; // golden goal: the first goal ends it
     }
-    if (golden && goals.home !== goals.away) break;
   }
   return goals;
 }
