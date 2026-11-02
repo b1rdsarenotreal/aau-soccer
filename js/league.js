@@ -1,22 +1,22 @@
 // League (dynasty) lifecycle: creating the league, saving results,
 // simulating, adding teams and conferences, and rolling into new seasons.
 
-import { DEFAULT_LOGOS, AAU_LOGO_SET } from './logo-import.js?v=20261102003216';
-import { START_YEAR, CONFERENCES, COACHES, SIDES, sideOf, conferencesFor, seedTeams, makeTeam, fillSite } from './data.js?v=20261102003216';
-import { generateSchedule, blankGame, DAY_ORDER, DEFAULT_REG_WEEKS, DEFAULT_TOURNEY_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, PER_WEEK, confWeeksFor, confWeeksMax, confRounds, confSeriesCounts, confTarget } from './schedule.js?v=20261102003216';
-import { simulateGame, estimateHitsErrors } from './sim.js?v=20261102003216';
-import { generatePoll, releaseDuePolls } from './polls.js?v=20261102003216';
-import { replayRatings, ensureBase } from './ratings.js?v=20261102003216';
-import { progress, lockField, postWeeks, allEvents, regWeeksOf, fieldSize, DEFAULT_NCAA, OLD_DEFAULT_NCAA, pickConfHosts, postseasonFinish, citySiteNames, wsTeams } from './postseason.js?v=20261102003216';
-import { isFinal, records, INDEPENDENT } from './standings.js?v=20261102003216';
-import { rng, normal, clamp, hashStr } from './util.js?v=20261102003216';
+import { DEFAULT_LOGOS, AAU_LOGO_SET } from './logo-import.js?v=20261102130254';
+import { START_YEAR, CONFERENCES, COACHES, SIDES, sideOf, conferencesFor, seedTeams, makeTeam, fillSite } from './data.js?v=20261102130254';
+import { generateSchedule, blankGame, DAY_ORDER, DEFAULT_REG_WEEKS, DEFAULT_TOURNEY_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, PER_WEEK, confWeeksFor, confWeeksMax, confRounds, confSeriesCounts, confTarget } from './schedule.js?v=20261102130254';
+import { simulateGame, estimateHitsErrors } from './sim.js?v=20261102130254';
+import { generatePoll, releaseDuePolls } from './polls.js?v=20261102130254';
+import { replayRatings, ensureBase } from './ratings.js?v=20261102130254';
+import { progress, lockField, postWeeks, allEvents, regWeeksOf, fieldSize, DEFAULT_NCAA, OLD_DEFAULT_NCAA, pickConfHosts, postseasonFinish, citySiteNames, wsTeams } from './postseason.js?v=20261102130254';
+import { isFinal, records, INDEPENDENT } from './standings.js?v=20261102130254';
+import { rng, normal, clamp, hashStr } from './util.js?v=20261102130254';
 
 export const SCHEMA_VERSION = 4;
 
 // Men's defaults: 24 teams in four regions of six (the top two seeds in each
 // wait a round, like the NCAA's 48-team field with 16 byes), and the men's
 // College Cup venue.
-const MEN_SETTINGS = { mcwsVenue: 'WakeMed Soccer Park', mcwsCity: 'Cary, N.C.', ncaa: { regionals: 4, perRegional: 6, wsSize: 4, homeSites: true } };
+const MEN_SETTINGS = { mcwsVenue: 'WakeMed Soccer Park', mcwsCity: 'Cary, N.C.', ncaa: { regionals: 4, perRegional: 6, wsSize: 4, homeSites: true, topHostRounds: 2 } };
 export function defaultSettings(side = 'women') {
   const base = {
     volatility: 1, confTourney: {}, confFormat: {}, mcwsName: 'College Cup', mcwsVenue: 'CPKC Stadium', mcwsCity: 'Kansas City, Mo.', development: 'normal', form: 'normal',

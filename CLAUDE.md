@@ -34,8 +34,9 @@ repos, and theirs aren't ported here, unless the owner asks.
   matches pair nearby teams of similar level; no invitationals.
 - Postseason stages keep the MCS internal names: `regionals` = regions,
   `supers` = super regionals, `mcws` = the College Cup. With
-  `ncaa.homeSites` (the default) region matches are at the higher seed's
-  field over two weeks (`node.wk`, `postWeeks().regional2`). Women's default
+  `ncaa.homeSites` (the default) the first round is at the higher seed's
+  field and the last `topHostRounds` (2) region rounds the next week at the
+  region's top seed's field (`node.wk`, `postWeeks().regional2`). Women's default
   is 4 regions of 8 (32 teams), men's 4 of 6 (24, top two seeds bye).
   Conference tournaments are single elimination only. User-facing text never
   says NCAA, MCWS, set, kills, innings or runs.

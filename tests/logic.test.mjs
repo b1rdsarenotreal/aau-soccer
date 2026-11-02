@@ -217,10 +217,12 @@ check('women\'s season: conference tournaments, 32 teams in four regions of eigh
     assert.equal(ev.seeds.length, 8);
     const gs = s.games.filter(g => g.event === ev.id);
     assert.equal(gs.length, 7);
-    // Every match at the higher seed's field.
+    // The first round at the higher seed's field; the last two rounds at the top seed's field.
     for (const g of gs) {
-      assert.ok(!g.neutral, 'region matches are at a school\'s field');
-      assert.ok(ev.seeds.indexOf(g.home) < ev.seeds.indexOf(g.away), 'the higher seed is at home');
+      if (/First round/.test(g.label)) { assert.ok(!g.neutral && ev.seeds.indexOf(g.home) < ev.seeds.indexOf(g.away), 'the higher seed is at home'); continue; }
+      assert.equal(gameVenue(s, g).host, ev.seeds[0], `${g.label}: at the top seed's field`);
+      if (g.home === ev.seeds[0] || g.away === ev.seeds[0]) assert.ok(g.home === ev.seeds[0] && !g.neutral, 'the top seed is at home');
+      else assert.ok(g.neutral && g.site === ev.seeds[0], 'neutral, hosted by the top seed');
     }
     assert.ok(gs.filter(g => /First round/.test(g.label)).every(g => g.week === W.regional));
     assert.ok(gs.filter(g => !/First round/.test(g.label)).every(g => g.week === W.regional2));
@@ -242,7 +244,7 @@ check('men\'s season: 24 teams in four regions of six, the top two seeds wait a 
   const M = newLeague({ side: 'men' }), ms = currentSeason(M);
   assert.equal(M.side, 'men');
   assert.equal(M.name, "AAU Men's Soccer");
-  assert.deepEqual(ncaaConfig(ms), { regionals: 4, perRegional: 6, wsSize: 4, homeSites: true });
+  assert.deepEqual(ncaaConfig(ms), { regionals: 4, perRegional: 6, wsSize: 4, homeSites: true, topHostRounds: 2 });
   simGames(ms, undefined, { autoLock: true, max: 6000 });
   assert.equal(ms.phase, 'complete');
   assert.equal(ms.post.field.length, 24);
@@ -253,6 +255,8 @@ check('men\'s season: 24 teams in four regions of six, the top two seeds wait a 
     const first = gs.filter(g => g.week === W.regional).flatMap(g => [g.home, g.away]);
     assert.ok(!first.includes(ev.seeds[0]) && !first.includes(ev.seeds[1]), 'seeds 1 and 2 have byes');
     assert.equal(first.length, 4);
+    for (const g of gs.filter(g => g.week === W.regional)) assert.ok(!g.neutral && ev.seeds.indexOf(g.home) < ev.seeds.indexOf(g.away), 'first round at the higher seed');
+    for (const g of gs.filter(g => g.week === W.regional2)) assert.equal(gameVenue(ms, g).host, ev.seeds[0], 'the last two rounds at the top seed\'s field');
   }
   assert.ok(ms.games.filter(g => g.type === 'mcws').every(g => gameVenue(ms, g).stadium === 'WakeMed Soccer Park'));
   // The women's dynasty is untouched.

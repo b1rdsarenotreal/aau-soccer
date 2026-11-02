@@ -6,10 +6,12 @@
 //     elimination; teams carry a seed inside their region (1 to
 //     perRegional), the top seeds getting byes when a region isn't a power
 //     of two (a region of 6: 1 and 2 wait for 3 v 6 and 4 v 5). With
-//     `homeSites` (the soccer default) every match is at the higher seed's
-//     field, the first round one week and the second and third rounds (the
-//     third is the national quarterfinal) the next, Thursday and Sunday.
-//     Without it, the region plays at its top seed's field in one week;
+//     `homeSites` (the soccer default) the first round is at the higher
+//     seed's field one week, and the second and third rounds (the third is
+//     the national quarterfinal) the next, Thursday and Sunday, at the
+//     region's top seed's field (`topHostRounds`: the last 2 rounds; 0 puts
+//     every match at the higher seed's field). Without `homeSites`, the
+//     whole region plays at its top seed's field in one week;
 //   - super regionals (one match) between two region winners when there are
 //     twice as many regions as College Cup spots; the higher national seed
 //     hosts,
@@ -18,10 +20,10 @@
 // supers and mcws. The format is locked into the season when the field is
 // announced.
 
-import { blankGame, DAY_ORDER } from './schedule.js?v=20261102003216';
-import { records, rpi, confStandings, conferences, isFinal, winnerOf, loserOf, isTie, resultFor, regularSeasonDone, regSeasonChamp, regSeasonChamps, quadrants } from './standings.js?v=20261102003216';
-import { generatePoll } from './polls.js?v=20261102003216';
-import { hashStr } from './util.js?v=20261102003216';
+import { blankGame, DAY_ORDER } from './schedule.js?v=20261102130254';
+import { records, rpi, confStandings, conferences, isFinal, winnerOf, loserOf, isTie, resultFor, regularSeasonDone, regSeasonChamp, regSeasonChamps, quadrants } from './standings.js?v=20261102130254';
+import { generatePoll } from './polls.js?v=20261102130254';
+import { hashStr } from './util.js?v=20261102130254';
 
 // ---------- tournament format ----------
 
@@ -30,7 +32,7 @@ import { hashStr } from './util.js?v=20261102003216';
 // seed's field; the region winners go to the College Cup (1 v 4 and 2 v 3 by
 // national seed). Men's: four regions of six (24 teams), the top two seeds
 // in each waiting a round, like the NCAA's 48-team men's field.
-export const DEFAULT_NCAA = { regionals: 4, perRegional: 8, wsSize: 4, homeSites: true };
+export const DEFAULT_NCAA = { regionals: 4, perRegional: 8, wsSize: 4, homeSites: true, topHostRounds: 2 };
 export const OLD_DEFAULT_NCAA = { regionals: 8, perRegional: 4, wsSize: 4 };
 // `regionals: 0` means no regionals: the whole field (wsSize teams, 2 to 8)
 // plays single elimination at the finals site, the top seeds getting byes
@@ -83,7 +85,7 @@ export function formatSummary(cfg) {
   }
   const per = cfg.perRegional, p2 = 2 ** Math.ceil(Math.log2(Math.max(2, per))), byes = p2 - per;
   const site = per === 2 ? 'one match' : `${per}-team single elimination${byes ? `, the top ${byes === 1 ? 'seed waiting' : `${byes} seeds waiting`} a round` : ''}`;
-  const where = cfg.homeSites ? 'every match at the higher seed\'s field (the first round one week, the next rounds the week after)' : `played at the top seed's field`;
+  const where = cfg.homeSites ? (cfg.topHostRounds ? `the first round at the higher seed's field, then the last ${cfg.topHostRounds === 1 ? 'round' : `${cfg.topHostRounds} rounds`} the week after at the top seed's field` : 'every match at the higher seed\'s field (the first round one week, the next rounds the week after)') : `played at the top seed's field`;
   const sup = hasSupers(cfg) ? ` Region winners pair off in ${cfg.regionals / 2} super regionals (the ${stageRoundName(cfg.regionals)}), one match hosted by the higher national seed.` : '';
   const ws = cfg.wsSize === 8 ? '8 teams at the College Cup site: quarterfinals, semifinals and the final' : 'the College Cup: semifinals and the national final';
   return `<b>Format:</b> ${fieldSize(cfg)} teams in ${cfg.regionals} regions of ${per} (${site}, seeded 1–${per}), led by the top ${cfg.regionals} national seeds, ${where}.${sup} Then ${ws} at a neutral site. Every round is one match, with two golden-goal overtimes and then penalty kicks if it's level.`;
@@ -510,12 +512,20 @@ function advanceEvent(season, ev, { type, week, name }) {
       const flip = FLIP_OF[node.key] != null;
       if (flip) [home, away] = [away, home];
       const atHostAsVisitor = hosted && flip;
-      // Home sites: the higher seed plays at home.
-      const atHome = !!ev.homeSites;
+      // Home sites: the higher seed plays at home, except in the region's
+      // last `topHostRounds` rounds, which are at the top seed's field (the
+      // top seed is the home team when it plays; otherwise the match is
+      // neutral, hosted there).
+      const round = +(/^R(\d+)-/.exec(node.key)?.[1] || 1);
+      const lastRound = Math.max(...ev.nodes.map(n => +(/^R(\d+)-/.exec(n.key)?.[1] || 1)));
+      const atTop = !!ev.homeSites && ev.topHostRounds > 0 && round > lastRound - ev.topHostRounds;
+      const atHome = !!ev.homeSites && !atTop;
+      if (atTop && away === ev.top) [home, away] = [away, home];
+      const topNeutral = atTop && home !== ev.top;
       const g = blankGame(season, {
         type, week: week + (node.wk || 0), day: node.day,
         order: node.t != null ? node.t : DAY_ORDER[node.day] + (type !== 'conf' && ['Mon', 'Tue', 'Wed'].includes(node.day) ? 7 : 0) + (node.key === 'G6' ? 0.5 : 0) + (node.depth || 0) * 0.01,
-        home, away, neutral: atHome ? false : !hosted || atHostAsVisitor, ...(atHostAsVisitor && !atHome ? { site: ev.host } : {}), event: ev.id, node: node.key,
+        home, away, neutral: atTop ? topNeutral : atHome ? false : !hosted || atHostAsVisitor, ...(topNeutral ? { site: ev.top } : atHostAsVisitor && !atHome ? { site: ev.host } : {}), event: ev.id, node: node.key,
         label: `${name} · ${node.label}`,
         ...(ev.kind === 'series' ? { series: ev.id, bestOf: 3 } : node.key[0] === 'F' && ev.kind === 'mcws' ? { series: `${ev.id}-finals`, bestOf: 3 } : {}),
       });
@@ -904,7 +914,7 @@ export function lockField(season) {
   const field = [...p.field].sort((a, b) => a.seed - b.seed);
   const home = !!p.cfg.homeSites;
   p.regionals = pods(field, p.cfg.regionals).map((teams, i) => ({
-    id: `reg-${i + 1}`, kind: regionalKind(teams.length), seeds: teams, host: home ? null : teams[0], top: teams[0], homeSites: home, nodes: regionalNodes(teams.length, home), champion: null,
+    id: `reg-${i + 1}`, kind: regionalKind(teams.length), seeds: teams, host: home ? null : teams[0], top: teams[0], homeSites: home, topHostRounds: home ? p.cfg.topHostRounds ?? 2 : 0, nodes: regionalNodes(teams.length, home), champion: null,
     name: home ? `${teams[0]} Region` : `${siteName(season, teams[0])} Regional`, path: i,
   }));
   if (!home) uniqueSiteNames(p.regionals, 'Regional');

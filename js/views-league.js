@@ -1,19 +1,19 @@
 // League pages: teams, team profiles, conferences, history, settings.
 
-import { readAauLogos, applyAauLogos } from './logo-import.js?v=20261102003216';
-import { ctx, S, app, modal, $, $$, esc, toast, changed, persist, flushSave, cache, team, teamInfo, logoImg, teamOptions, teamHref, confLogo, confHref, confInfo, confColor, imageFileToDataUrl, readableOn, openGame, resultText } from './ui.js?v=20261102003216';
-import { isFinal, winnerOf, resultFor, records, rpi, confStandings, regSeasonChamp, regSeasonChamps, isIndependent } from './standings.js?v=20261102003216';
-import { ovr } from './sim.js?v=20261102003216';
-import { latestPoll, pollRankMap, pollSizeOf, POLL_SIZES, DEFAULT_POLL_SIZE } from './polls.js?v=20261102003216';
-import { addTeam, removeTeam, renameTeam, addConference, renameConference, deleteConference, rebuildSchedule, startNextSeason, weekName, newLeague, beginOffseason, draftRemoveTeam, draftRestoreTeam, draftWarnings, coachName, coachSchool, hireCoach, newCoach, availableCoaches, backfillHitsErrors, placeRemaining, clearPoints, pointsLeft, migrateLeague, applyAlignment, canApplyAlignment, syncCoachBonus, devTotal, coachResumes, coachPrestige, prestigeLabel, coachBonus, programPrestiges, programLabel, fitLabel } from './league.js?v=20261102003216';
-import { hotSeat, HEAT } from './hotseat.js?v=20261102003216';
-import { setRating } from './ratings.js?v=20261102003216';
-import { confFormatName, postseasonFinish, postseasonDetail, postseasonRecord, wsTeams, postWeeks, regWeeksOf, ncaaConfig, ncaaProblems, fieldSize, hasSupers, formatSummary, proposeField, DEFAULT_NCAA, mcwsVenue, allEvents, gameVenue } from './postseason.js?v=20261102003216';
-import { DEFAULT_TOURNEY_WEEKS, DEFAULT_REG_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, confTarget } from './schedule.js?v=20261102003216';
-import { exportLeague, clearLeague } from './store.js?v=20261102003216';
-import { conferencesFor, sideOf } from './data.js?v=20261102003216';
-import { clamp, fmtPct } from './util.js?v=20261102003216';
-import { recordBook, teamPollHistory, headToHead } from './records.js?v=20261102003216';
+import { readAauLogos, applyAauLogos } from './logo-import.js?v=20261102130254';
+import { ctx, S, app, modal, $, $$, esc, toast, changed, persist, flushSave, cache, team, teamInfo, logoImg, teamOptions, teamHref, confLogo, confHref, confInfo, confColor, imageFileToDataUrl, readableOn, openGame, resultText } from './ui.js?v=20261102130254';
+import { isFinal, winnerOf, resultFor, records, rpi, confStandings, regSeasonChamp, regSeasonChamps, isIndependent } from './standings.js?v=20261102130254';
+import { ovr } from './sim.js?v=20261102130254';
+import { latestPoll, pollRankMap, pollSizeOf, POLL_SIZES, DEFAULT_POLL_SIZE } from './polls.js?v=20261102130254';
+import { addTeam, removeTeam, renameTeam, addConference, renameConference, deleteConference, rebuildSchedule, startNextSeason, weekName, newLeague, beginOffseason, draftRemoveTeam, draftRestoreTeam, draftWarnings, coachName, coachSchool, hireCoach, newCoach, availableCoaches, backfillHitsErrors, placeRemaining, clearPoints, pointsLeft, migrateLeague, applyAlignment, canApplyAlignment, syncCoachBonus, devTotal, coachResumes, coachPrestige, prestigeLabel, coachBonus, programPrestiges, programLabel, fitLabel } from './league.js?v=20261102130254';
+import { hotSeat, HEAT } from './hotseat.js?v=20261102130254';
+import { setRating } from './ratings.js?v=20261102130254';
+import { confFormatName, postseasonFinish, postseasonDetail, postseasonRecord, wsTeams, postWeeks, regWeeksOf, ncaaConfig, ncaaProblems, fieldSize, hasSupers, formatSummary, proposeField, DEFAULT_NCAA, mcwsVenue, allEvents, gameVenue } from './postseason.js?v=20261102130254';
+import { DEFAULT_TOURNEY_WEEKS, DEFAULT_REG_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, confTarget } from './schedule.js?v=20261102130254';
+import { exportLeague, clearLeague } from './store.js?v=20261102130254';
+import { conferencesFor, sideOf } from './data.js?v=20261102130254';
+import { clamp, fmtPct } from './util.js?v=20261102130254';
+import { recordBook, teamPollHistory, headToHead } from './records.js?v=20261102130254';
 
 const ui = { confFilter: '', ncaaDraft: null, teamSort: { k: 'ovr', dir: -1 }, coachSort: { k: 'now', dir: -1 }, teamTab: 'season', h2hSort: { k: 'g', dir: -1 }, h2hFilter: 'all', memberSort: { k: 'titles', dir: -1 } };
 
@@ -942,7 +942,7 @@ export function renderSettings() {
   const cur = L.seasons[L.currentYear], cs = cur.settings;
   const saved = { ...DEFAULT_NCAA, ...(cs.ncaa || {}) };
   const nc = ui.ncaaDraft || saved;
-  const ncDirty = ['regionals', 'perRegional', 'wsSize', 'homeSites'].some(k => !!nc[k] !== !!saved[k] || (k !== 'homeSites' && nc[k] !== saved[k]));
+  const ncDirty = ['regionals', 'perRegional', 'wsSize', 'homeSites', 'topHostRounds'].some(k => !!nc[k] !== !!saved[k] || (k !== 'homeSites' && nc[k] !== saved[k]));
   const probs = ncaaProblems(nc, Object.keys(cur.teams).length);
   const autoCount = Object.keys(ctx.league.conferences).filter(c => !isIndependent(c) && Object.values(cur.teams).some(t => t.conference === c)).length;
   if (autoCount > fieldSize(nc)) probs.push(`There are ${autoCount} conference champions with automatic bids, more than the ${fieldSize(nc)}-team field.`);
@@ -984,7 +984,7 @@ export function renderSettings() {
       </div>
       <div class="card stack ncaa-card"><h2>AAU National Tournament</h2>
         <label class="field">Format <select id="n-mode"><option value="reg" ${nc.regionals ? 'selected' : ''}>Regions, then the College Cup</option><option value="none" ${nc.regionals ? '' : 'selected'}>No regions: the whole field at the College Cup site</option></select></label>
-        ${nc.regionals ? `<label class="field">Region matches <select id="n-home"><option value="1" ${nc.homeSites ? 'selected' : ''}>At the higher seed's field, over two weeks</option><option value="0" ${nc.homeSites ? '' : 'selected'}>All at the top seed's field, in one week</option></select></label>
+        ${nc.regionals ? `<label class="field">Region matches <select id="n-home"><option value="2" ${nc.homeSites && nc.topHostRounds ? 'selected' : ''}>First round at the higher seed's field, the last two rounds at the top seed's field (two weeks)</option><option value="1" ${nc.homeSites && !nc.topHostRounds ? 'selected' : ''}>Every match at the higher seed's field, over two weeks</option><option value="0" ${nc.homeSites ? '' : 'selected'}>All at the top seed's field, in one week</option></select></label>
         <label class="field">Finals site <select id="n-ws">${[[4, '4 teams: the College Cup (semifinals and final)'], [8, '8 teams: quarterfinals, semifinals and final']].map(([v, l]) => `<option value="${v}" ${nc.wsSize === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
         <label class="field">Regions <select id="n-reg">${[nc.wsSize, nc.wsSize * 2].map(v => `<option value="${v}" ${nc.regionals === v ? 'selected' : ''}>${v} regions${v === nc.wsSize ? ': winners go straight to the College Cup' : `: winners meet in ${v / 2} super regionals`}</option>`).join('')}</select></label>
         <label class="field">Teams per region <select id="n-per">${[[2, '2: one match'], [3, '3: the 1 seed waits for the 2-3 winner'], [4, '4: seeds 1–4, two rounds'], [5, '5: seeds 1–5'], [6, '6: seeds 1–6, the 1 and 2 seeds wait a round'], [7, '7: seeds 1–7, the 1 seed waits a round'], [8, '8: seeds 1–8, three rounds']].map(([v, l]) => `<option value="${v}" ${nc.perRegional === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>`
@@ -1007,7 +1007,7 @@ export function renderSettings() {
   $('#s-weeks').onchange = e => { cs.regWeeks = Math.max(8, Math.min(16, Math.round(Number(e.target.value) || DEFAULT_REG_WEEKS))); changed({ progress: false }); toast(`New schedules will run ${cs.regWeeks} weeks.`); };
   $('#s-cm').onchange = e => { cs.confMatches = Math.max(2, Math.min(24, Math.round(+e.target.value || DEFAULT_CONF_MATCHES))); changed({ progress: false }); };
   $('#s-max').onchange = e => { cs.maxMatches = Math.max(12, Math.min(30, Math.round(+e.target.value || DEFAULT_MAX_MATCHES))); changed({ progress: false }); };
-  if ($('#n-home')) $('#n-home').onchange = e => { draft().homeSites = e.target.value === '1'; renderSettings(); };
+  if ($('#n-home')) $('#n-home').onchange = e => { const d = draft(); d.homeSites = e.target.value !== '0'; d.topHostRounds = e.target.value === '2' ? 2 : 0; renderSettings(); };
   const draft = () => (ui.ncaaDraft ||= { ...nc });
   $('#n-mode').onchange = e => { const d = draft(); if (e.target.value === 'none') { d.regionals = 0; if (!(d.wsSize >= 2 && d.wsSize <= 8)) d.wsSize = 6; } else { d.wsSize = [4, 8].includes(d.wsSize) ? d.wsSize : 4; d.regionals = d.wsSize; d.perRegional ||= 8; } renderSettings(); };
   $('#n-ws').onchange = e => { const d = draft(); d.wsSize = +e.target.value; if (d.regionals && d.regionals !== d.wsSize && d.regionals !== d.wsSize * 2) d.regionals = d.wsSize === 8 ? 8 : 4; renderSettings(); };
@@ -1015,7 +1015,7 @@ export function renderSettings() {
   if ($('#n-per')) $('#n-per').onchange = e => { draft().perRegional = +e.target.value; renderSettings(); };
   if ($('#n-cancel')) $('#n-cancel').onclick = () => { ui.ncaaDraft = null; renderSettings(); };
   $('#n-save').onclick = () => {
-    cs.ncaa = { regionals: nc.regionals, perRegional: nc.perRegional, wsSize: nc.wsSize, homeSites: !!nc.homeSites };
+    cs.ncaa = { regionals: nc.regionals, perRegional: nc.perRegional, wsSize: nc.wsSize, homeSites: !!nc.homeSites, topHostRounds: nc.homeSites ? nc.topHostRounds || 0 : 0 };
     ui.ncaaDraft = null;
     if (cur.phase === 'selection') proposeField(cur); // resize the proposed field to the new format
     changed();

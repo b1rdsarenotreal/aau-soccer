@@ -1,14 +1,14 @@
 // Season pages: home, schedule, standings, rankings and postseason.
 
-import { ctx, S, app, modal, $, $$, esc, toast, changed, persist, cache, team, teamOptions, teamNames, confLogo, confHref, confColor, confInfo, gameCard, compactCard, placeholderCard, bindGameCards, openGame, resultText, periodNote, DAY_NAMES, readableOn, teamInfo, logoImg, teamHref } from './ui.js?v=20261102003216';
-import { isFinal, winnerOf, resultFor, records, rpi, confStandings, conferences, regSeasonChamp, regSeasonChamps, TIEBREAKERS, quadrants, quadCuts, isIndependent, INDEPENDENT } from './standings.js?v=20261102003216';
-import { latestPoll, generatePoll, pollRankMap, pollSizeOf, VOTER_PANEL, voterStyle, votersOf, addRandomVoter, removeVoter } from './polls.js?v=20261102003216';
-import { ovr } from './sim.js?v=20261102003216';
-import { simGames, addGame, weekName } from './league.js?v=20261102003216';
-import { CONF_FORMATS, confFormatName, confKind } from './postseason.js?v=20261102003216';
-import { COMMITTEE_TIERS, COMMITTEE_SHORT, committeeSheet, compareTeams, mcwsVenue, postWeeks, regWeeksOf, ncaaConfig, hasSupers, noRegionals, fieldSize, wsTeams, formatSummary, shownSeed, postseasonBonus, defaultConfTourneySize, confTourneySeeds, reseedConfTourney, proposeField, lockField, pods, nodeTeams, nodeNeeded, runnerUp, committeeOrder, autoBids, refLabel, setConfFormat, ensureLayout, confHost, setConfHost, mcwsHistory, selectionBoard, setAtLarge, confirmField, unconfirmField, bracketology, BRACKETOLOGY_FROM_WEEK } from './postseason.js?v=20261102003216';
-import { fmtPct, hashStr } from './util.js?v=20261102003216';
-import { DAY_ORDER, CONF_WEEKENDS, applyConfWeekend } from './schedule.js?v=20261102003216';
+import { ctx, S, app, modal, $, $$, esc, toast, changed, persist, cache, team, teamOptions, teamNames, confLogo, confHref, confColor, confInfo, gameCard, compactCard, placeholderCard, bindGameCards, openGame, resultText, periodNote, DAY_NAMES, readableOn, teamInfo, logoImg, teamHref } from './ui.js?v=20261102130254';
+import { isFinal, winnerOf, resultFor, records, rpi, confStandings, conferences, regSeasonChamp, regSeasonChamps, TIEBREAKERS, quadrants, quadCuts, isIndependent, INDEPENDENT } from './standings.js?v=20261102130254';
+import { latestPoll, generatePoll, pollRankMap, pollSizeOf, VOTER_PANEL, voterStyle, votersOf, addRandomVoter, removeVoter } from './polls.js?v=20261102130254';
+import { ovr } from './sim.js?v=20261102130254';
+import { simGames, addGame, weekName } from './league.js?v=20261102130254';
+import { CONF_FORMATS, confFormatName, confKind } from './postseason.js?v=20261102130254';
+import { COMMITTEE_TIERS, COMMITTEE_SHORT, committeeSheet, compareTeams, mcwsVenue, postWeeks, regWeeksOf, ncaaConfig, hasSupers, noRegionals, fieldSize, wsTeams, formatSummary, shownSeed, postseasonBonus, defaultConfTourneySize, confTourneySeeds, reseedConfTourney, proposeField, lockField, pods, nodeTeams, nodeNeeded, runnerUp, committeeOrder, autoBids, refLabel, setConfFormat, ensureLayout, confHost, setConfHost, mcwsHistory, selectionBoard, setAtLarge, confirmField, unconfirmField, bracketology, BRACKETOLOGY_FROM_WEEK } from './postseason.js?v=20261102130254';
+import { fmtPct, hashStr } from './util.js?v=20261102130254';
+import { DAY_ORDER, CONF_WEEKENDS, applyConfWeekend } from './schedule.js?v=20261102130254';
 
 // " at Easton Stadium, Los Angeles, Calif." for a host school with a home field.
 const atField = (s, school) => { const t = s.teams[school]; const f = [t?.stadium, t?.city].filter(Boolean).join(', '); return f ? ` at ${esc(f)}` : ''; };
@@ -944,7 +944,7 @@ function renderRegionals(root) {
     ${p.regionals.map(ev => {
       const seed = t => { const i = ev.seeds.indexOf(t); return i >= 0 ? i + 1 : null; };
       const top = ev.top || ev.host, nat = shownSeed(s, top);
-      const where = ev.homeSites ? `every match at the higher seed's field` : `hosted by ${esc(ev.host)}${atField(s, ev.host)}`;
+      const where = ev.homeSites ? (ev.topHostRounds ? `the first round at the higher seed's field, the last ${ev.topHostRounds === 1 ? 'round' : `${ev.topHostRounds} rounds`} at ${esc(top)}'s field${atField(s, top)}` : `every match at the higher seed's field`) : `hosted by ${esc(ev.host)}${atField(s, ev.host)}`;
       return `<div class="card" id="${evAnchor(ev.id)}"><div class="row" style="margin-bottom:6px"><h2 style="margin:0">${esc(ev.name)}</h2>${ev.champion ? `<span class="badge gold">To the ${esc(s.settings.mcwsName)}: ${esc(ev.champion)}</span>` : ''}</div>
       <div class="small muted" style="margin-bottom:8px">${ev.seeds.map((t, i) => `${i + 1}. ${esc(t)}`).join(' · ')} · single elimination, led by ${esc(top)}${nat ? ` (No. ${nat} national seed)` : ''}, ${where}</div>
       ${eventBracket(ev, seed)}</div>`; }).join('')}`;
