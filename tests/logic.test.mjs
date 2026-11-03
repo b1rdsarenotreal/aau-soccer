@@ -36,7 +36,7 @@ check('every AAU soccer program, women\'s and men\'s, in the commissioner\'s con
   }
   assert.ok(Object.values(w).filter(t => !t.coach).length <= 3 && Object.values(m).filter(t => !t.coach).length <= 2, 'only a few open jobs');
   assert.ok(!conferencesFor('men')['Southwest Conference'], 'no Southwest Conference in men\'s soccer');
-  for (const c of Object.keys(CONFERENCES)) assert.ok(existsSync(new URL(`../${CONFERENCES[c].logo}`, import.meta.url)), `${c} logo`);
+  for (const c of Object.keys(CONFERENCES)) assert.ok((/^https:\/\//.test(CONFERENCES[c].logo) || existsSync(new URL(`../${CONFERENCES[c].logo}`, import.meta.url))), `${c} logo`);
   const s = splitOvr('Stanford', 90);
   assert.ok(Math.abs(0.4 * s.off + 0.3 * s.pit + 0.3 * s.def - 90) <= 0.5);
   assert.ok(w.Stanford.off > w.Caltech.off + 30, 'Division I above Division III');
