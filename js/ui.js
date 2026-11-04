@@ -1,16 +1,16 @@
 // Shared UI state and pieces used by every page: the league, saving,
 // team labels and logos, game cards, and the game editor.
 
-import { saveLeague } from './store.js?v=20261103152921';
-import { logoFor } from './logos.js?v=20261103152921';
-import { LOGO_ALIASES } from './data.js?v=20261103152921';
-import { ovr, winProbability, matchOdds, isKnockout, HALF, OT } from './sim.js?v=20261103152921';
-import { records, isFinal, winnerOf, resultFor, isTie, sameConf } from './standings.js?v=20261103152921';
-import { latestPoll, pollRankMap } from './polls.js?v=20261103152921';
-import { afterChange, applyResult, clearResult, simResult, deleteGame, weekName, estimateHE } from './league.js?v=20261103152921';
-import { regWeeksOf, shownSeed, regionalSeed, mcwsVenue, gameVenue } from './postseason.js?v=20261103152921';
-import { DAY_ORDER } from './schedule.js?v=20261103152921';
-import { esc } from './util.js?v=20261103152921';
+import { saveLeague } from './store.js?v=20261104000716';
+import { logoFor } from './logos.js?v=20261104000716';
+import { LOGO_ALIASES } from './data.js?v=20261104000716';
+import { ovr, winProbability, matchOdds, isKnockout, HALF, OT } from './sim.js?v=20261104000716';
+import { records, isFinal, winnerOf, resultFor, isTie, sameConf } from './standings.js?v=20261104000716';
+import { latestPoll, pollRankMap } from './polls.js?v=20261104000716';
+import { afterChange, applyResult, clearResult, simResult, deleteGame, weekName, estimateHE } from './league.js?v=20261104000716';
+import { regWeeksOf, shownSeed, regionalSeed, mcwsVenue, gameVenue } from './postseason.js?v=20261104000716';
+import { DAY_ORDER } from './schedule.js?v=20261104000716';
+import { esc } from './util.js?v=20261104000716';
 
 // Seasons are academic years: the 2030 season is "2030–31". Years stay
 // numbers in the data; this is only how they read on screen.
