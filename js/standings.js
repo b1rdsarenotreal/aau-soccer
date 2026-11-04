@@ -1,6 +1,6 @@
 // Records, conference standings with tiebreakers, and the RPI.
 
-import { pct, hashStr } from './util.js?v=20261104004003';
+import { pct, hashStr } from './util.js?v=20261104005416';
 
 export const isFinal = g => g.final && g.homeR != null && g.awayR != null;
 // A match level on goals is a tie in the record, even when penalty kicks
