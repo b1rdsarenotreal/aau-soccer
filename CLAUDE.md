@@ -40,6 +40,15 @@ repos, and theirs aren't ported here, unless the owner asks.
   is 4 regions of 8 (32 teams), men's 4 of 6 (24, top two seeds bye).
   Conference tournaments are single elimination only. User-facing text never
   says NCAA, MCWS, set, kills, innings or runs.
+- Selection uses the Power Index (NPI): `npi` in `js/standings.js`, with
+  each side's NCAA Division III dials in `settings.npi` (`NPI_BY_SIDE` in
+  `js/league.js`), when `settings.index` is 'npi' (the default;
+  `indexVersion` 1 switched older saves from the current or next season
+  on). A level game counts as a tie in the NPI even if penalty kicks or a
+  shootout decided it. The committee goes straight down the NPI: no tiers
+  (`sheet.tiers` empty). `rating(season)` gives the season's index in the
+  RPI's shape (value in `rpi`, plus `rank`, `sosRank`); use it, not
+  `rpi()`, and `indexName(season)` for on-screen labels.
 - On-screen text says "match", not "game".
 - Women's and men's: `league.side` is 'women' (or missing) or 'men'. Each
   side has its own save key (`js/store.js`), team rows (`js/data.js`, made by
