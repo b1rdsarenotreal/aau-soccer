@@ -48,7 +48,7 @@
 // confirmed (Carnegie Mellon's women, UC Santa Cruz, McGill's women) start
 // as open jobs.
 
-import { DEFAULT_LOGOS } from './logo-import.js?v=20261111124330';
+import { DEFAULT_LOGOS } from './logo-import.js?v=20261111204958';
 
 export const START_YEAR = 2030;
 
@@ -281,7 +281,7 @@ export const SITES = {
 };
 
 // Names the logo lists may know a school by.
-export const LOGO_ALIASES = { 'Penn': 'Pennsylvania', 'Miami': 'Miami', 'UC Santa Barbara': 'UC Santa Barbara', 'George Washington': 'George Washington' };
+export const LOGO_ALIASES = { 'Penn': 'Pennsylvania', 'Miami': 'Miami', 'UC Santa Barbara': 'UC Santa Barbara', 'George Washington': 'George Washington', 'UConn': 'Connecticut' };
 
 // Head coaches for the 2026 season (see above). By 2030 some will have moved
 // on; rename anyone on the Coaches page.
