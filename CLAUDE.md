@@ -31,7 +31,8 @@ repos, and theirs aren't ported here, unless the owner asks.
 - Schedule: two matches a week, Thursday and Sunday; conference play is a
   single round robin, or a double round robin (home and away) for a
   conference of 6 or fewer (`confTarget`, `DOUBLE_ROUND_ROBIN_MAX`); non-conference
-  matches pair nearby teams of similar level; no invitationals.
+  matches pair nearby teams of similar level (few marquee games each: top-third
+  pairings get costlier per one a team has, `MARQUEE` in `js/schedule.js`); no invitationals.
 - Postseason stages keep the MCS internal names: `regionals` = regions,
   `supers` = super regionals, `mcws` = the College Cup. With
   `ncaa.homeSites` (the default) the first round is at the higher seed's
