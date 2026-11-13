@@ -388,14 +388,11 @@ select.coach-sel.vacant { border-color: var(--accent); color: var(--accent); fon
 .bk .bg-team { font-size: 13.5px; gap: 5px; padding: 0; line-height: 1.2; }
 .bk .bg-team, .bk .bg-team .team, .bk .bg-team .team-link, .bk .bg-team .team > :last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .bk .bg-n.bg-r { font: 800 18px/1 var(--mono); }
-/* Winner: a gradient in the team's color, text in whichever of black or white reads best. */
-.bg-row.win-tint { position: relative; color: var(--tint-fg); margin: 1px -6px; padding: 0 6px; border-top-color: transparent; }
-/* The color starts just after the logo, so the logo keeps its own background. */
-.bg-row.win-tint::before { content: ''; position: absolute; top: 0; bottom: 0; left: 26px; right: 0; border-radius: 6px; background: linear-gradient(90deg, var(--tint) 0%, var(--tint) 45%, var(--tint-end) 100%); }
-.bg-row.win-tint > * { position: relative; z-index: 1; }
-.bg-row.win-tint .team > :first-child { margin-right: 6px; }
-.bg-row.win-tint + .bg-row, .bg-row + .bg-row.win-tint { border-top-color: transparent; }
-.bg-row.win-tint .bg-team, .bg-row.win-tint .team-link, .bg-row.win-tint .rank, .bg-row.win-tint .bg-n { color: var(--tint-fg); }
+/* Winner: the score sits on a block of the team's color, text in whichever
+   of black or white reads best (the owner's call, Nov. 2026: the team's name
+   stays plain, in bold). */
+.bg-row.win-tint .bg-r { justify-self: end; min-width: 30px; padding: 3px 7px; border-radius: 6px; text-align: center; background: var(--tint); color: var(--tint-fg); }
+.bg-row.win-tint .bg-r small { color: inherit; opacity: .85; }
 .dropped { margin-top: 12px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 8px; background: var(--panel-2); display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 13px; }
 .drop-item { display: inline-flex; align-items: center; gap: 6px; }
 .coach-initials { font: 700 30px var(--display); color: #fff; }
@@ -995,7 +992,7 @@ button.bx-sg:hover { border-color: var(--muted); }
 
 /* ---------- Full bracket: regions in the corners, the finals in the middle ---------- */
 .bb-scroll { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); margin-bottom: 10px; }
-.bb { display: flex; align-items: stretch; gap: 18px; padding: 18px; width: max-content; min-width: 100%; box-sizing: border-box; }
+.bb { display: flex; align-items: stretch; gap: 18px; padding: 18px; width: max-content; margin: 0 auto; box-sizing: border-box; }
 .bb-side { display: flex; flex-direction: column; gap: 22px; }
 .bb-region .bk-scroll { overflow: visible; }
 .bb-rhead { display: flex; align-items: baseline; gap: 10px; padding-bottom: 6px; margin-bottom: 6px; border-bottom: 4px solid var(--rc); }
@@ -1019,3 +1016,5 @@ button.bx-sg:hover { border-color: var(--muted); }
 .bb .bg-team { font-size: 13px; }
 .bb-fgame { width: 214px; color: var(--ink); }
 .bb-fgame.last { margin-top: 6px; box-shadow: 0 0 0 2px var(--optic); border-radius: 9px; }
+.bb-fgame .bg-row { grid-template-columns: minmax(0, 1fr) minmax(30px, auto); gap: 8px; min-height: 30px; }
+.bb-fgame .bg-n.bg-r { font: 800 18px/1 var(--mono); }
