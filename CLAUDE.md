@@ -50,16 +50,20 @@ repos, and theirs aren't ported here, unless the owner asks.
   (`sheet.tiers` empty). `rating(season)` gives the season's index in the
   RPI's shape (value in `rpi`, plus `rank`, `sosRank`); use it, not
   `rpi()`, and `indexName(season)` for on-screen labels.
-- The AAU look (Nov. 2026, soccer first; the other apps don't have it yet):
-  navy `--board` and gold `--optic` around each team's and conference's own
-  colors; Oswald headings (`--display`), Saira Condensed numbers (`--mono`),
-  Inter text (`--body`). Standings open on All conferences (compact cards with
-  `confHead`, the conference's colors) with a picker for one conference's full
-  table; the poll leads with the No. 1 team's card and the week's movers; a
-  team's schedule is one regular-season box (conference logo on conference
-  matches) plus a box per tournament; Postseason → Full bracket
-  (`renderBoard`) draws the regions in the corners (right-hand ones mirrored,
-  `eventBracket(..., { mirror })`) around the finals.
+- The AAU look (Nov. 2026, the same as AAU Field Hockey's, built to match the
+  owner's mockups): a two-row top bar (brand row, then the menu); scoreboard
+  cards (`gameCard`: the conference's color bar and logo, a row per team with
+  each half and the final, the loser faded); standings with the conference
+  list down the side (`st-*`), each conference in its colors (`confVars`,
+  `confHead`; points, conference W-L-T, PB), All conferences compact, the
+  last 5 (postseason included) opening the poll's match pop-up; the poll as a
+  board (`pb-*`) beside movers, receiving votes and dropped out, under the
+  No. 1 team's card; the team page header in the team's colors with title
+  banners and a numbers strip (`teamHero`) and schedule boxes (`ts2-*`: one
+  regular-season box, conference logo on conference matches, a box per
+  tournament, a venue column, the result opening the box score);
+  Postseason → Full bracket (`renderBoard`). Navy `--board`, gold `--optic`;
+  Oswald, Saira Condensed, Inter.
 - On-screen text says "match", not "game".
 - Women's and men's: `league.side` is 'women' (or missing) or 'men'. Each
   side has its own save key (`js/store.js`), team rows (`js/data.js`, made by
