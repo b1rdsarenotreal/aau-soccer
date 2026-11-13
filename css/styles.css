@@ -391,7 +391,10 @@ select.coach-sel.vacant { border-color: var(--accent); color: var(--accent); fon
 /* Winner: the score sits on a block of the team's color, text in whichever
    of black or white reads best (the owner's call, Nov. 2026: the team's name
    stays plain, in bold). */
-.bg-row.win-tint .bg-r { justify-self: end; min-width: 30px; padding: 3px 7px; border-radius: 6px; text-align: center; background: var(--tint); color: var(--tint-fg); }
+/* Every score sits in the same box, so winners' and losers' scores line up
+   down the bracket; only the winner's box is filled. */
+.bg-row:not(.bg-head) .bg-n.bg-r { justify-self: end; box-sizing: border-box; min-width: 30px; padding: 3px 7px; border-radius: 6px; text-align: center; }
+.bg-row.win-tint .bg-r { background: var(--tint); color: var(--tint-fg); }
 .bg-row.win-tint .bg-r small { color: inherit; opacity: .85; }
 .dropped { margin-top: 12px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 8px; background: var(--panel-2); display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 13px; }
 .drop-item { display: inline-flex; align-items: center; gap: 6px; }
