@@ -48,7 +48,7 @@
 // confirmed (Carnegie Mellon's women, UC Santa Cruz, McGill's women) start
 // as open jobs.
 
-import { DEFAULT_LOGOS } from './logo-import.js?v=20261116215134';
+import { DEFAULT_LOGOS } from './logo-import.js?v=20261116222145';
 
 export const START_YEAR = 2030;
 
