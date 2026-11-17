@@ -7,9 +7,9 @@
 // season cool it. These are suggestions only: nothing changes until the
 // commissioner fires someone.
 
-import { records, rpi, rating, indexName, usesNpi, confStandings, regSeasonChamps, isIndependent } from './standings.js?v=20261117005220';
-import { wsTeams } from './postseason.js?v=20261117005220';
-import { ovr } from './sim.js?v=20261117005220';
+import { records, rpi, rating, indexName, usesNpi, confStandings, regSeasonChamps, isIndependent } from './standings.js?v=20261117010414';
+import { wsTeams } from './postseason.js?v=20261117010414';
+import { ovr } from './sim.js?v=20261117010414';
 
 export const HEAT = {
   fire: { label: 'Fire suggested', min: 2.6 },
