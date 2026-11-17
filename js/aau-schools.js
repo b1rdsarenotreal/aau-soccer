@@ -1,4 +1,4 @@
-import { CONF_LOGO_LINKS } from './data.js?v=20261116232155';
+import { CONF_LOGO_LINKS } from './data.js?v=20261116233234';
 
 // Every AAU member school, for the "AAU school" pick on the Add team form:
 // abbreviation, mascot, colors, city and the conference it plays in in the
@@ -134,6 +134,23 @@ export const AAU_CONFERENCES = {
 // team form fills these in too.
 export const AAU_PROGRAMS = {
   women: {
+    // The owner's new schools (Nov. 2026): home venue only; coaches are added by hand.
+    "Arkansas": { stadium: "Razorback Field" },
+    "Baylor": { stadium: "Betty Lou Mays Soccer Field" },
+    "Houston": { stadium: "Carl Lewis International Complex" },
+    "SMU": { stadium: "Westcott Field" },
+    "Texas Tech": { stadium: "John Walker Soccer Complex" },
+    "UT Dallas": { stadium: "UT Dallas Soccer Complex" },
+    "Saint Louis": { stadium: "Hermann Stadium" },
+    "Memphis": { stadium: "Mike Rose Soccer Complex" },
+    "Northern Arizona": { stadium: "Lumberjack Stadium" },
+    "San Diego State": { stadium: "SDSU Sports Deck" },
+    "Nevada": { stadium: "Mackay Stadium" },
+    "UNLV": { stadium: "Peter Johann Memorial Soccer Field" },
+    "Oregon State": { stadium: "Paul Lorenz Field" },
+    "BYU": { stadium: "South Field" },
+    "Utah State": { stadium: "Chuck and Gloria Bell Field" },
+    "Washington State": { stadium: "Lower Soccer Field" },
     "Florida State": { stadium: "Seminole Soccer Complex", coach: "Brian Pensky" },
     "Georgia": { stadium: "Turner Soccer Complex", coach: "Keidane McAlpine" },
     "Iowa State": { stadium: "Cyclone Sports Complex", coach: "Matt Fannon" },
@@ -143,6 +160,14 @@ export const AAU_PROGRAMS = {
     "UConn": { stadium: "Joseph J. Morrone Stadium", coach: "Margaret Rodriguez" },
   },
   men: {
+    // The owner's new schools (Nov. 2026): home venue only; coaches are added by hand.
+    "SMU": { stadium: "Westcott Field" },
+    "UT Dallas": { stadium: "UT Dallas Soccer Complex" },
+    "Saint Louis": { stadium: "Hermann Stadium" },
+    "Memphis": { stadium: "Mike Rose Soccer Complex" },
+    "San Diego State": { stadium: "SDSU Sports Deck" },
+    "UNLV": { stadium: "Peter Johann Memorial Soccer Field" },
+    "Oregon State": { stadium: "Paul Lorenz Field" },
     "Syracuse": { stadium: "SU Soccer Stadium", coach: "Ian McIntyre" },
     "UC Merced": { stadium: "Bobcat Field", coach: "Albert Martins" },
     "UConn": { stadium: "Joseph J. Morrone Stadium", coach: "Chris Gbandi" },
