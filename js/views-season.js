@@ -1,15 +1,15 @@
 // Season pages: home, schedule, standings, rankings and postseason.
 
-import { ctx, S, app, modal, $, $$, esc, toast, changed, persist, cache, team, teamOptions, teamNames, confLogo, confHref, confColor, confInfo, gameCard, compactCard, placeholderCard, bindGameCards, openGame, resultText, periodNote, DAY_NAMES, readableOn, teamInfo, logoImg, teamHref, seasonLabel } from './ui.js?v=20261117182452';
-import { partnersOf } from './partners.js?v=20261117182452';
-import { isFinal, winnerOf, resultFor, records, rpi, rating, indexName, usesNpi, NPI_DIALS, confStandings, conferences, regSeasonChamp, regSeasonChamps, TIEBREAKERS, quadrants, quadCuts, isIndependent, INDEPENDENT } from './standings.js?v=20261117182452';
-import { latestPoll, generatePoll, pollRankMap, pollSizeOf, VOTER_PANEL, voterStyle, votersOf, addRandomVoter, removeVoter } from './polls.js?v=20261117182452';
-import { ovr } from './sim.js?v=20261117182452';
-import { simGames, addGame, weekName } from './league.js?v=20261117182452';
-import { confClashes, CONF_FORMATS, confFormatName, confKind , regionalFirstRound } from './postseason.js?v=20261117182452';
-import { COMMITTEE_TIERS, gameVenue, COMMITTEE_SHORT, committeeSheet, compareTeams, mcwsVenue, postWeeks, regWeeksOf, ncaaConfig, hasSupers, noRegionals, fieldSize, wsTeams, formatSummary, shownSeed, postseasonBonus, defaultConfTourneySize, confTourneySeeds, reseedConfTourney, proposeField, lockField, pods, nodeTeams, nodeNeeded, runnerUp, committeeOrder, autoBids, refLabel, setConfFormat, ensureLayout, confHost, setConfHost, mcwsHistory, selectionBoard, setAtLarge, confirmField, unconfirmField, bracketology, BRACKETOLOGY_FROM_WEEK } from './postseason.js?v=20261117182452';
-import { fmtPct, hashStr } from './util.js?v=20261117182452';
-import { DAY_ORDER, CONF_WEEKENDS, applyConfWeekend } from './schedule.js?v=20261117182452';
+import { ctx, S, app, modal, $, $$, esc, toast, changed, persist, cache, team, teamOptions, teamNames, confLogo, confHref, confColor, confInfo, gameCard, compactCard, placeholderCard, bindGameCards, openGame, resultText, periodNote, DAY_NAMES, readableOn, teamInfo, logoImg, teamHref, seasonLabel } from './ui.js?v=20261117224904';
+import { partnersOf } from './partners.js?v=20261117224904';
+import { isFinal, winnerOf, resultFor, records, rpi, rating, indexName, usesNpi, NPI_DIALS, confStandings, conferences, regSeasonChamp, regSeasonChamps, TIEBREAKERS, quadrants, quadCuts, isIndependent, INDEPENDENT } from './standings.js?v=20261117224904';
+import { latestPoll, generatePoll, pollRankMap, pollSizeOf, VOTER_PANEL, voterStyle, votersOf, addRandomVoter, removeVoter } from './polls.js?v=20261117224904';
+import { ovr } from './sim.js?v=20261117224904';
+import { simGames, addGame, weekName } from './league.js?v=20261117224904';
+import { confClashes, CONF_FORMATS, confFormatName, confKind , regionalFirstRound } from './postseason.js?v=20261117224904';
+import { COMMITTEE_TIERS, gameVenue, COMMITTEE_SHORT, committeeSheet, compareTeams, mcwsVenue, postWeeks, regWeeksOf, ncaaConfig, hasSupers, noRegionals, fieldSize, wsTeams, formatSummary, shownSeed, shownNationalSeed, postseasonBonus, defaultConfTourneySize, confTourneySeeds, reseedConfTourney, proposeField, lockField, pods, nodeTeams, nodeNeeded, runnerUp, committeeOrder, autoBids, refLabel, setConfFormat, ensureLayout, confHost, setConfHost, mcwsHistory, selectionBoard, setAtLarge, confirmField, unconfirmField, bracketology, BRACKETOLOGY_FROM_WEEK } from './postseason.js?v=20261117224904';
+import { fmtPct, hashStr } from './util.js?v=20261117224904';
+import { DAY_ORDER, CONF_WEEKENDS, applyConfWeekend } from './schedule.js?v=20261117224904';
 
 // " at Easton Stadium, Los Angeles, Calif." for a host school with a home field.
 const atField = (s, school) => { const t = s.teams[school]; const f = [t?.stadium, t?.city].filter(Boolean).join(', '); return f ? ` at ${esc(f)}` : ''; };
@@ -1142,7 +1142,7 @@ function renderBoard(root, extra = 0) {
     <div class="bb-side">${order[0].map(ev => region(ev, false)).join('')}</div>
     ${finals}
     <div class="bb-side">${order[1].map(ev => region(ev, true)).join('')}</div></div></div>
-    <p class="small muted">Seeds inside a region are regional seeds; the ${name} shows national seeds. Click a match for its box score.</p>`;
+    <p class="small muted">Every team keeps its region seed through the ${name}. Click a match for its box score.</p>`;
   fitBoard(root, extra);
 }
 // Size the board to the window (see below). It refits when the window
@@ -1175,7 +1175,7 @@ function renderRegionals(root) {
   root.innerHTML = `${open ? '<div class="row" style="margin-bottom:12px"><span class="spacer"></span><button class="btn primary" id="rg-sim">🎲 Sim regions</button></div>' : ''}
     ${p.regionals.map(ev => {
       const seed = t => { const i = ev.seeds.indexOf(t); return i >= 0 ? i + 1 : null; };
-      const top = ev.top || ev.host, nat = shownSeed(s, top);
+      const top = ev.top || ev.host, nat = shownNationalSeed(s, top);
       const where = ev.homeSites ? (ev.topHostRounds ? `the first round at the higher seed's field, the last ${ev.topHostRounds === 1 ? 'round' : `${ev.topHostRounds} rounds`} at ${esc(top)}'s field${atField(s, top)}` : `every match at the higher seed's field`) : `hosted by ${esc(ev.host)}${atField(s, ev.host)}`;
       return `<div class="card" id="${evAnchor(ev.id)}"><div class="row" style="margin-bottom:6px"><h2 style="margin:0">${esc(ev.name)}</h2>${ev.champion ? `<span class="badge gold">To the ${esc(s.settings.mcwsName)}: ${esc(ev.champion)}</span>` : ''}</div>
       <div class="small muted" style="margin-bottom:8px">${ev.seeds.map((t, i) => `${i + 1}. ${esc(t)}`).join(' · ')} · single elimination, led by ${esc(top)}${nat ? ` (No. ${nat} national seed)` : ''}, ${where}</div>

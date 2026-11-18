@@ -1,16 +1,16 @@
 // Shared UI state and pieces used by every page: the league, saving,
 // team labels and logos, game cards, and the game editor.
 
-import { saveLeague } from './store.js?v=20261117182452';
-import { logoFor } from './logos.js?v=20261117182452';
-import { LOGO_ALIASES } from './data.js?v=20261117182452';
-import { ovr, winProbability, matchOdds, isKnockout, HALF, OT } from './sim.js?v=20261117182452';
-import { records, isFinal, winnerOf, resultFor, isTie, sameConf } from './standings.js?v=20261117182452';
-import { latestPoll, pollRankMap } from './polls.js?v=20261117182452';
-import { afterChange, applyResult, clearResult, simResult, deleteGame, weekName, estimateHE } from './league.js?v=20261117182452';
-import { regWeeksOf, shownSeed, regionalSeed, mcwsVenue, gameVenue } from './postseason.js?v=20261117182452';
-import { DAY_ORDER } from './schedule.js?v=20261117182452';
-import { esc } from './util.js?v=20261117182452';
+import { saveLeague } from './store.js?v=20261117224904';
+import { logoFor } from './logos.js?v=20261117224904';
+import { LOGO_ALIASES } from './data.js?v=20261117224904';
+import { ovr, winProbability, matchOdds, isKnockout, HALF, OT } from './sim.js?v=20261117224904';
+import { records, isFinal, winnerOf, resultFor, isTie, sameConf } from './standings.js?v=20261117224904';
+import { latestPoll, pollRankMap } from './polls.js?v=20261117224904';
+import { afterChange, applyResult, clearResult, simResult, deleteGame, weekName, estimateHE } from './league.js?v=20261117224904';
+import { regWeeksOf, shownSeed, regionalSeed, mcwsVenue, gameVenue } from './postseason.js?v=20261117224904';
+import { DAY_ORDER } from './schedule.js?v=20261117224904';
+import { esc } from './util.js?v=20261117224904';
 
 // Logo files in this app (img/conf/) carry this release's version, like the
 // scripts do, so a redrawn logo shows right away instead of a cached copy.
@@ -156,8 +156,7 @@ export function imageFileToDataUrl(file, max = 256) {
 // ---------- game cards ----------
 
 // Seed shown on a postseason game: the conference tournament seed, the
-// regional seed in a regional, or the national seed (regional hosts only)
-// after that.
+// regional seed, kept through the whole national tournament.
 export function seedOf(g, t) {
   const s = S();
   if (g.type === 'conf') { const ev = Object.values(s.post?.confT || {}).find(e => e.id === g.event); const i = ev ? ev.seeds.indexOf(t) : -1; return i >= 0 ? i + 1 : null; }
@@ -633,7 +632,7 @@ function editGame(id, { isNew = false } = {}) {
 // ---------- compact bracket cards (team, R, H, E) ----------
 
 // Poll rankings show on regular-season and conference tournament games; NCAA
-// games show only the regional hosts' national seeds.
+// games show each team's regional seed.
 const showsRank = type => type !== 'regional' && type !== 'super' && type !== 'mcws';
 // A winner's row in a bracket card: a gradient in the team's color, with
 // black or white text, whichever reads better on that color.
