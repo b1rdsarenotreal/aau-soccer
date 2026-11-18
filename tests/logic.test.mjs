@@ -108,7 +108,7 @@ check('schedule: two matches a week, Thursday and Sunday; a single round robin i
     for (const t of Object.values(s.teams)) {
       if (t.conference === INDEPENDENT) continue;
       assert.equal(conf[t.school], confTarget(sizes[t.conference]), `${t.school}: everyone once (twice in a conference of 6 or fewer)`);
-      assert.ok(Math.abs(2 * (home[t.school] || 0) - conf[t.school]) <= 1, `${t.school} home/away`);
+      assert.ok(Math.abs(2 * (home[t.school] || 0) - conf[t.school]) <= 2, `${t.school} home/away`); // travel partners split their match: one off half at most
     }
     // Big conferences meet once; small ones twice, once at each school.
     const meets = {};
@@ -398,4 +398,38 @@ console.log(`${n} checks ok in ${Date.now() - t0} ms`);
   if (joiner) assert2.equal(T[joiner].conference, 'Greater South Conference');
   assert2.equal(R.realignmentFor(d), null, 'applied once');
   console.log('realignment ok' + (joiner ? ` (${joiner} joins)` : ''));
+}
+
+// Travel partners: in conferences of four or more, a team that plays two
+// conference games away in a weekend plays its two hosts, who are partners;
+// every team plays the same number of conference games; partners can be
+// changed by hand and turned off.
+{
+  const assert3 = (await import('node:assert/strict')).default;
+  const LG = await import('../js/league.js'), SCH = await import('../js/schedule.js'), PT = await import('../js/partners.js');
+  for (const side of ['women', 'men']) {
+    let s; try { s = LG.currentSeason(LG.newLeague({ side })); } catch { continue; }
+    const games = SCH.generateSchedule(s, 21).filter(g => g.confGame);
+    assert3.ok(s.partnerConfs.length > 0, `${side}: some conferences travel in pairs`);
+    const byConf = {};
+    for (const [t, x] of Object.entries(s.teams)) if (!x.conference.startsWith('Indep')) (byConf[x.conference] ||= []).push(t);
+    for (const [c, list] of Object.entries(byConf)) {
+      if (list.length < 4) continue;
+      const p = PT.partnersOf(s, c, list), mate = {}, used = s.partnerConfs.includes(c);
+      for (const [a, b] of p.pairs) { mate[a] = b; mate[b] = a; }
+      const mine = games.filter(g => list.includes(g.home));
+      const cnt = {}, trips = {};
+      for (const g of mine) { for (const t of [g.home, g.away]) cnt[t] = (cnt[t] || 0) + 1; (trips[`${g.away}|${g.week}`] ||= []).push(g.home); }
+      assert3.equal(new Set(Object.values(cnt)).size, 1, `${side} ${c}: even conference schedules`);
+      for (const [k, hosts] of Object.entries(trips)) if (used && hosts.length === 2) assert3.equal(mate[hosts[0]], hosts[1], `${side} ${c}: ${k} visits ${hosts.join(' and ')}, not a pair`);
+    }
+  }
+  const s = LG.currentSeason(LG.newLeague({}));
+  const c = Object.values(s.teams)[0].conference, list = Object.keys(s.teams).filter(t => s.teams[t].conference === c);
+  const [a, b] = PT.partnersOf(s, c, list).pairs[0], [x] = PT.partnersOf(s, c, list).pairs[1];
+  s.settings.partners = { [c]: [[a, x]] };
+  assert3.ok(PT.partnersOf(s, c, list).pairs.some(q => q.includes(a) && q.includes(x)), 'a hand-set pair is kept');
+  s.settings.partnersOff = { [c]: true };
+  assert3.equal(PT.partnersOf(s, c, list), null, 'turned off');
+  console.log('travel partners ok');
 }
