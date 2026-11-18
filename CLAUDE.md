@@ -33,6 +33,10 @@ repos, and theirs aren't ported here, unless the owner asks.
   conference of 6 or fewer (`confTarget`, `DOUBLE_ROUND_ROBIN_MAX`); non-conference
   matches pair nearby teams of similar level (few marquee games each: top-third
   pairings get costlier per one a team has, `MARQUEE` in `js/schedule.js`); no invitationals.
+- Non-conference dates are shuffled (`shuffleNonConfRounds`, the owner's
+  ask, Nov. 2026): the non-conference weekends are drawn one after another,
+  each pairing similar teams, so a top team's best opponents would come in
+  a row; the rounds are then dealt out to the non-conference dates at random.
 - Postseason stages keep the MCS internal names: `regionals` = regions,
   `supers` = super regionals, `mcws` = the College Cup. With
   `ncaa.homeSites` (the default) the first round is at the higher seed's
