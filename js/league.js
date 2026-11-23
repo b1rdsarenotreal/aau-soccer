@@ -1,15 +1,15 @@
 // League (dynasty) lifecycle: creating the league, saving results,
 // simulating, adding teams and conferences, and rolling into new seasons.
 
-import { DEFAULT_LOGOS, AAU_LOGO_SET } from './logo-import.js?v=20261122201307';
-import { START_YEAR, CONFERENCES, CONF_LOGO_LINKS, COACHES, SIDES, sideOf, conferencesFor, seedTeams, makeTeam, fillSite } from './data.js?v=20261122201307';
-import { generateSchedule, blankGame, DAY_ORDER, DEFAULT_REG_WEEKS, DEFAULT_TOURNEY_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, PER_WEEK, confWeeksFor, confWeeksMax, confRounds, confSeriesCounts, confTarget } from './schedule.js?v=20261122201307';
-import { simulateGame, estimateHitsErrors } from './sim.js?v=20261122201307';
-import { generatePoll, releaseDuePolls } from './polls.js?v=20261122201307';
-import { replayRatings, ensureBase } from './ratings.js?v=20261122201307';
-import { progress, lockField, postWeeks, allEvents, regWeeksOf, fieldSize, DEFAULT_NCAA, OLD_DEFAULT_NCAA, pickConfHosts, postseasonFinish, citySiteNames, wsTeams } from './postseason.js?v=20261122201307';
-import { isFinal, records, INDEPENDENT } from './standings.js?v=20261122201307';
-import { rng, normal, clamp, hashStr } from './util.js?v=20261122201307';
+import { DEFAULT_LOGOS, AAU_LOGO_SET } from './logo-import.js?v=20261122204254';
+import { START_YEAR, CONFERENCES, CONF_LOGO_LINKS, COACHES, SIDES, sideOf, conferencesFor, seedTeams, makeTeam, fillSite } from './data.js?v=20261122204254';
+import { generateSchedule, blankGame, DAY_ORDER, DEFAULT_REG_WEEKS, DEFAULT_TOURNEY_WEEKS, DEFAULT_CONF_MATCHES, DEFAULT_MAX_MATCHES, PER_WEEK, confWeeksFor, confWeeksMax, confRounds, confSeriesCounts, confTarget } from './schedule.js?v=20261122204254';
+import { simulateGame, estimateHitsErrors } from './sim.js?v=20261122204254';
+import { generatePoll, releaseDuePolls } from './polls.js?v=20261122204254';
+import { replayRatings, ensureBase } from './ratings.js?v=20261122204254';
+import { progress, lockField, postWeeks, allEvents, regWeeksOf, fieldSize, DEFAULT_NCAA, OLD_DEFAULT_NCAA, pickConfHosts, postseasonFinish, citySiteNames, wsTeams } from './postseason.js?v=20261122204254';
+import { isFinal, records, INDEPENDENT } from './standings.js?v=20261122204254';
+import { rng, normal, clamp, hashStr } from './util.js?v=20261122204254';
 
 export const SCHEMA_VERSION = 4;
 
